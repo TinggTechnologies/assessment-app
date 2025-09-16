@@ -4,7 +4,7 @@ const StartAssessmentModal = ({ isOpen, onClose, onProceed }) => {
   if (!isOpen) return null;
   
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 poppins-regular">
       <div className="rounded-lg max-w-md w-full">
         <div className="flex justify-between items-center pb-4 p-6" style={{backgroundColor: 'var(--color-primary-light)', borderTopRightRadius: 20, borderTopLeftRadius: 20}}>
           <h3 className="text-lg font-semibold text-white">Start assessment</h3>

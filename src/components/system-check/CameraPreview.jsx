@@ -2,7 +2,7 @@ import React from 'react';
 import { Camera } from 'lucide-react';
 
 const CameraPreview = ({ videoRef, stream, onStartCamera, onStopCamera }) => (
-  <div className="space-y-4">
+  <div className="space-y-4 poppins-regular">
     <div className="bg-gray-100 rounded-lg overflow-hidden aspect-video">
       {stream ? (
         <video
