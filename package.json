@@ -16,8 +16,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "react-scripts start --ignore-source-map-errors",
+    "build": "react-scripts build --ignore-source-map-errors",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

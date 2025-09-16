@@ -1,21 +1,8 @@
 import { useState, useEffect } from 'react';
 
-// Import TensorFlow.js with error handling
-let tf;
-let cocoSsd;
-
-// Try to import TensorFlow.js
-try {
-  tf = require('@tensorflow/tfjs');
-  cocoSsd = require('@tensorflow-models/coco-ssd');
-} catch (error) {
-  console.warn('TensorFlow.js not available locally, will use CDN fallback');
-}
-
 const useObjectDetection = () => {
   const [isDetecting, setIsDetecting] = useState(false);
   const [detectedObjects, setDetectedObjects] = useState([]);
-  const [annotations, setAnnotations] = useState([]);
   const [model, setModel] = useState(null);
   const [isModelLoading, setIsModelLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -25,29 +12,45 @@ const useObjectDetection = () => {
       setIsModelLoading(true);
       setError(null);
       
-      // Try to use local TensorFlow.js first
-      if (cocoSsd) {
-        console.log('Loading COCO-SSD model from local package...');
-        const loadedModel = await cocoSsd.load();
+      // Use script tag injection instead of dynamic import for CDN
+      console.log('Loading TensorFlow.js and COCO-SSD from CDN...');
+      
+      // Load TensorFlow.js
+      await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js');
+      
+      // Load COCO-SSD
+      await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@latest/dist/coco-ssd.min.js');
+      
+      // Use global variables instead of module imports
+      if (window.cocoSsd && window.cocoSsd.load) {
+        const loadedModel = await window.cocoSsd.load();
         setModel(loadedModel);
-        console.log('COCO-SSD model loaded successfully from local package');
-        return;
+        console.log('COCO-SSD model loaded successfully from CDN');
+      } else {
+        throw new Error('COCO-SSD not available');
       }
-      
-      // Fallback to CDN if local package is not available
-      console.log('Loading COCO-SSD model from CDN...');
-      const cdnTf = await import('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js');
-      const cdnCocoSsd = await import('https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@latest/dist/coco-ssd.min.js');
-      
-      const loadedModel = await cdnCocoSsd.load();
-      setModel(loadedModel);
-      console.log('COCO-SSD model loaded successfully from CDN');
     } catch (err) {
       console.error('Error loading model:', err);
       setError('Failed to load object detection model. Using simulation mode.');
     } finally {
       setIsModelLoading(false);
     }
+  };
+
+  // Helper function to load scripts via script tags
+  const loadScript = (src) => {
+    return new Promise((resolve, reject) => {
+      if (document.querySelector(`script[src="${src}"]`)) {
+        resolve();
+        return;
+      }
+      
+      const script = document.createElement('script');
+      script.src = src;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error(`Failed to load script: ${src}`));
+      document.head.appendChild(script);
+    });
   };
 
   const detectObjects = async (videoElement) => {
@@ -70,30 +73,13 @@ const useObjectDetection = () => {
       setDetectedObjects(validObjects);
     } catch (err) {
       console.error('Detection error:', err);
-      // Fall back to simulation if real detection fails
       simulateObjectDetection();
     }
   };
 
   const simulateObjectDetection = () => {
-    const mockObjects = [  
-    ];
-    
-    const validObjects = mockObjects.filter(obj => obj.confidence > 0.7);
-    setDetectedObjects(validObjects);
-  };
-
-  const addAnnotation = (object, event) => {
-    const newAnnotation = {
-      id: Date.now(),
-      objectId: object.id,
-      objectName: object.name,
-      event: event,
-      timestamp: new Date().toISOString(),
-      confidence: object.confidence
-    };
-    
-    setAnnotations(prev => [...prev, newAnnotation]);
+    const mockObjects = []; // Empty array for simulation
+    setDetectedObjects(mockObjects);
   };
 
   const startDetection = async () => {
@@ -108,21 +94,17 @@ const useObjectDetection = () => {
     setDetectedObjects([]);
   };
 
-  // Detection loop
   useEffect(() => {
     let interval;
     
     if (isDetecting) {
-      // Run detection every second
       interval = setInterval(() => {
         if (model) {
-          // Real detection if model is available
           const videoElement = document.querySelector('video');
           if (videoElement && videoElement.videoWidth > 0) {
             detectObjects(videoElement);
           }
         } else {
-          // Fallback to simulation
           simulateObjectDetection();
         }
       }, 1000);
@@ -136,13 +118,11 @@ const useObjectDetection = () => {
   return {
     isDetecting,
     detectedObjects,
-    annotations,
     model,
     isModelLoading,
     error,
     startDetection,
     stopDetection,
-    addAnnotation,
     detectObjects
   };
 };
