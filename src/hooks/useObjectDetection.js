@@ -12,16 +12,12 @@ const useObjectDetection = () => {
       setIsModelLoading(true);
       setError(null);
       
-      // Use script tag injection instead of dynamic import for CDN
       console.log('Loading TensorFlow.js and COCO-SSD from CDN...');
       
-      // Load TensorFlow.js
       await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js');
       
-      // Load COCO-SSD
       await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@latest/dist/coco-ssd.min.js');
       
-      // Use global variables instead of module imports
       if (window.cocoSsd && window.cocoSsd.load) {
         const loadedModel = await window.cocoSsd.load();
         setModel(loadedModel);
@@ -37,7 +33,6 @@ const useObjectDetection = () => {
     }
   };
 
-  // Helper function to load scripts via script tags
   const loadScript = (src) => {
     return new Promise((resolve, reject) => {
       if (document.querySelector(`script[src="${src}"]`)) {
@@ -78,7 +73,7 @@ const useObjectDetection = () => {
   };
 
   const simulateObjectDetection = () => {
-    const mockObjects = []; // Empty array for simulation
+    const mockObjects = []; 
     setDetectedObjects(mockObjects);
   };
 
