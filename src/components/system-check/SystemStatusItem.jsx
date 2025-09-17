@@ -1,11 +1,9 @@
 import React from "react";
 import { Check, AlertTriangle } from 'lucide-react';
 
-const SystemStatusItem = ({ icon: Icon, label, status, hasBeenChecked }) => {
-
+const SystemStatusItem = ({ icon: Icon, label, status, hasBeenChecked, iconSrc }) => {
   const getStatusIndicator = () => {
     if (!hasBeenChecked) {
-
       return (
         <div 
           className="w-4 h-4 rounded-full" 
@@ -54,10 +52,19 @@ const SystemStatusItem = ({ icon: Icon, label, status, hasBeenChecked }) => {
         className="p-3 rounded-full mb-3" 
         style={{backgroundColor: 'var(--color-tertiary-bg)'}} 
       >
-        <Icon 
-          className="w-5 h-5" 
-          style={{color: getIconColor()}} 
-        />
+        {iconSrc ? (
+          <img 
+            src={iconSrc} 
+            alt={label} 
+            className="w-5 h-5"
+            style={{color: getIconColor()}} 
+          />
+        ) : (
+          <Icon 
+            className="w-5 h-5" 
+            style={{color: getIconColor()}} 
+          />
+        )}
       </div>
       <span className="text-sm font-medium text-gray-700">{label}</span>
       {getStatusIndicator()}

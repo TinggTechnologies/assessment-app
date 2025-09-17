@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Clock, Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 import { ASSESSMENT_TITLE, ASSESSMENT_SUBTITLE } from '../../utils/constants';
 import logo from '../../assets/images/logo.png';
+import timer from '../../assets/images/timer-start.png'
 
 const Header = ({ timeLeft }) => {
   const [showTime, setShowTime] = useState(true);
@@ -31,7 +32,7 @@ const Header = ({ timeLeft }) => {
             }} 
             className="flex items-center space-x-2 text-purple-600 py-3 px-3"
           >
-            <Clock style={{ color: 'var(--color-primary-light)' }} className="w-5 h-5" />
+            <img src={timer} alt="Logo" className="w-5 h-5" />
             {showTime && (
               <span className="font-medium" style={{ color: 'var(--color-primary-light)' }}>
                 {timeLeft} time left

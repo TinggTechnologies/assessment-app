@@ -10,6 +10,7 @@ import useCamera from '../../hooks/useCamera';
 import useSystemCheck from '../../hooks/useSystemCheck';
 import useObjectDetection from '../../hooks/useObjectDetection';
 import { INITIAL_MINUTES } from '../../utils/constants';
+import monitor from '../../assets/images/monitor-recorder.png'
 
 const SystemCheck = () => {
   const { formattedTime } = useTimer(INITIAL_MINUTES);
@@ -158,7 +159,7 @@ const SystemCheck = () => {
   useEffect(() => {
     const handleResize = () => {
       if (showInlineCamera && detectedObjects.length > 0) {
-        setTimeout(drawBoundingBoxes, 100); // Small delay to ensure canvas is resized
+        setTimeout(drawBoundingBoxes, 100); 
       }
     };
 
@@ -254,12 +255,13 @@ const SystemCheck = () => {
 
             {/* System Status Grid */}
             <div className="grid grid-cols-2 gap-4">
-              <SystemStatusItem 
-                icon={Camera} 
-                label="Webcam" 
-                status={systemStatus.webcam}
-                hasBeenChecked={hasBeenChecked}
-              />
+            <SystemStatusItem 
+              icon={Camera} 
+              iconSrc={monitor}
+              label="Webcam" 
+              status={systemStatus.webcam}
+              hasBeenChecked={hasBeenChecked}
+            />
               <SystemStatusItem 
                 icon={Wifi} 
                 label="Speed" 
@@ -268,6 +270,7 @@ const SystemCheck = () => {
               />
               <SystemStatusItem 
                 icon={Mic} 
+                iconSrc={monitor}
                 label="Gadget mic" 
                 status={systemStatus.gadgetMic}
                 hasBeenChecked={hasBeenChecked}
